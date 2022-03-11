@@ -5,6 +5,9 @@
 *.iml
 *.idea
 
+# Allure
+**/allure-results
+
 # Log file
 *.log
 

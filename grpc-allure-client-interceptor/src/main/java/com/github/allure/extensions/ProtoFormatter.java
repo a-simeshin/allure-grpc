@@ -3,6 +3,7 @@ package com.github.allure.extensions;
 import com.github.underscore.U;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
+import com.google.protobuf.TextFormat;
 import com.google.protobuf.util.JsonFormat;
 
 import java.util.List;
@@ -21,14 +22,14 @@ public class ProtoFormatter {
      * @param responses any proto messages counted from 0 to many
      * @return formatted string json or plaintext
      */
-    public static String toJson(final List<Message> responses) {
+    public static String format(final List<Message> responses) {
         if (responses.size() == 0)
             return "";
 
         if (FORMAT_PROTO_TO_JSON) {
             if (responses.size() == 1) {
                 try {
-                    final String json = toJson(responses.get(0));
+                    final String json = format(responses.get(0));
                     return U.formatJson(json);
                 } catch (InvalidProtocolBufferException ignored) {
                     return responses.get(0).toString();
@@ -37,7 +38,7 @@ public class ProtoFormatter {
                 return U.formatJson(
                         "[" + responses.stream().map(message -> {
                             try {
-                                return toJson(message);
+                                return format(message);
                             } catch (InvalidProtocolBufferException ignored) {
                                 return "unable_to_format: \"" + message.toString() + "\"";
                             }
@@ -49,7 +50,7 @@ public class ProtoFormatter {
                 return responses.get(0).toString();
             } else {
                 final StringBuilder sb = new StringBuilder();
-                responses.forEach(message -> sb.append(message.toString()).append("\n\n"));
+                responses.forEach(message -> sb.append(message.toString()));
                 return sb.toString();
             }
         }
@@ -59,13 +60,17 @@ public class ProtoFormatter {
      * Converting one proto message to Json format with field names
      *
      * @param protoMessage proto message
-     * @return String in json format
+     * @return String in json or plaintext format
      * @throws InvalidProtocolBufferException while formatting is broken somehow
      */
-    public static String toJson(final Message protoMessage) throws InvalidProtocolBufferException {
-        return JsonFormat.printer()
-                .preservingProtoFieldNames()
-                .print(protoMessage);
+    public static String format(final Message protoMessage) throws InvalidProtocolBufferException {
+        if (FORMAT_PROTO_TO_JSON) {
+            return JsonFormat.printer()
+                    .preservingProtoFieldNames()
+                    .print(protoMessage);
+        } else {
+            return TextFormat.printer().printToString(protoMessage);
+        }
     }
 
 }

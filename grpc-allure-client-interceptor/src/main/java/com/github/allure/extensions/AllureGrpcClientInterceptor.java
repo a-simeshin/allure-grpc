@@ -55,10 +55,10 @@ public class AllureGrpcClientInterceptor implements ClientInterceptor {
                 Allure.setLifecycle(getLifecycle());
                 Allure.step("gRPC intercation " + methodDescriptor.getServiceName(), () -> {
                     Allure.addAttachment("gRPC method", ObjectUtils.toString(methodDescriptor));
-                    Allure.addAttachment("gRPC request", ObjectUtils.toString(ProtoFormatter.toJson((Message) message)));
+                    Allure.addAttachment("gRPC request", ObjectUtils.toString(ProtoFormatter.format((Message) message)));
                     Allure.addByteAttachmentAsync("gRPC responses", "text/plain", () -> {
                         Awaitility.await().until(interactionIsDone::get);
-                        return ObjectUtils.toString(ProtoFormatter.toJson((List<Message>) responses.get()))
+                        return ObjectUtils.toString(ProtoFormatter.format((List<Message>) responses.get()))
                                 .getBytes(StandardCharsets.UTF_8);
                     });
                     Allure.addByteAttachmentAsync("gRPC status", "text/plain", () -> {
