@@ -1,4 +1,4 @@
-package com.github.allure.extesions;
+package com.github.allure.extensions;
 
 import net.devh.boot.grpc.client.interceptor.GlobalClientInterceptorConfigurer;
 import org.springframework.context.annotation.Bean;

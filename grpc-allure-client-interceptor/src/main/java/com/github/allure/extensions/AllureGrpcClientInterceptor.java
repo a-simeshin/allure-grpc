@@ -1,4 +1,4 @@
-package com.github.allure.extesions;
+package com.github.allure.extensions;
 
 import com.google.protobuf.Message;
 import io.grpc.*;
@@ -38,7 +38,7 @@ public class AllureGrpcClientInterceptor implements ClientInterceptor {
          */
         return new ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(call) {
             final AtomicBoolean interactionIsDone = new AtomicBoolean(false);
-            final AtomicReference<List<RespT>> responses = new AtomicReference<>(new ArrayList<RespT>());
+            final AtomicReference<List<RespT>> responses = new AtomicReference<>(new ArrayList<>());
             final AtomicReference<Metadata> metadata = new AtomicReference<>(null);
             final AtomicReference<Status> interactionStatus = new AtomicReference<>();
 

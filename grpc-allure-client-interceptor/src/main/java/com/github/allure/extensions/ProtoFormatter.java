@@ -1,4 +1,4 @@
-package com.github.allure.extesions;
+package com.github.allure.extensions;
 
 import com.github.underscore.U;
 import com.google.protobuf.InvalidProtocolBufferException;
