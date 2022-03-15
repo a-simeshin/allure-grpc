@@ -29,27 +29,12 @@
             <artifactId>protobuf-java-util</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.google.errorprone</groupId>
-            <artifactId>error_prone_annotations</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>com.github.javadev</groupId>
             <artifactId>underscore</artifactId>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -65,7 +50,7 @@
                     </protocArtifact>
                     <pluginId>grpc-java</pluginId>
                     <pluginArtifact>
-                        io.grpc:protoc-gen-grpc-java:${grpc-api.version}:exe:${os.detected.classifier}
+                        io.grpc:protoc-gen-grpc-java:${grpc.version}:exe:${os.detected.classifier}
                     </pluginArtifact>
                 </configuration>
                 <executions>

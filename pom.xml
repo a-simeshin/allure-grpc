@@ -38,9 +38,7 @@
 
         <!-- gRPC -->
         <grpc-client-spring-boot-autoconfigure.version>2.13.1.RELEASE</grpc-client-spring-boot-autoconfigure.version>
-        <grpc-api.version>1.44.1</grpc-api.version>
-        <grpc-stub.version>1.42.2</grpc-stub.version>
-        <grpc-protobuf.version>1.42.2</grpc-protobuf.version>
+        <grpc.version>1.42.0</grpc.version>
         <protobuf-java.version>3.12.4</protobuf-java.version>
         <protoc.version>3.9.0</protoc.version>
         <error_prone_annotations.versions>2.9.0</error_prone_annotations.versions>
@@ -73,32 +71,11 @@
                 <groupId>net.devh</groupId>
                 <artifactId>grpc-client-spring-boot-autoconfigure</artifactId>
                 <version>${grpc-client-spring-boot-autoconfigure.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>${slf4j-api.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-api</artifactId>
-                <version>${grpc-api.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.google.errorprone</groupId>
-                        <artifactId>error_prone_annotations</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.google.guava</groupId>
-                        <artifactId>guava</artifactId>
-                    </exclusion>
-                </exclusions>
+                <version>${grpc.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.qameta.allure</groupId>
@@ -114,27 +91,11 @@
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java-util</artifactId>
                 <version>${protobuf-java.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.google.errorprone</groupId>
-                        <artifactId>error_prone_annotations</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.google.guava</groupId>
-                        <artifactId>guava</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.google.errorprone</groupId>
-                <artifactId>error_prone_annotations</artifactId>
-                <version>${error_prone_annotations.versions}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
@@ -158,28 +119,22 @@
     <!-- for tests -->
     <dependencies>
         <dependency>
+            <groupId>net.devh</groupId>
+            <artifactId>grpc-client-spring-boot-autoconfigure</artifactId>
+            <version>${grpc-client-spring-boot-autoconfigure.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.devh</groupId>
+            <artifactId>grpc-server-spring-boot-autoconfigure</artifactId>
+            <version>${grpc-client-spring-boot-autoconfigure.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <version>${spring-boot-starter-test.verion}</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.platform</groupId>
-                    <artifactId>junit-platform-engine</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.junit.jupiter</groupId>
-                    <artifactId>junit-jupiter-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apiguardian</groupId>
-                    <artifactId>apiguardian-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.hamcrest</groupId>
-                    <artifactId>hamcrest</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.qameta.allure</groupId>
@@ -192,41 +147,11 @@
             <artifactId>junit-jupiter-api</artifactId>
             <version>${junit-jupiter-api.version}</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apiguardian</groupId>
-                    <artifactId>apiguardian-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-engine</artifactId>
             <version>${junit-platform-engine.version}</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apiguardian</groupId>
-                    <artifactId>apiguardian-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apiguardian</groupId>
-            <artifactId>apiguardian-api</artifactId>
-            <version>${apiguardian-api.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.grpc</groupId>
-            <artifactId>grpc-stub</artifactId>
-            <version>${grpc-stub.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.grpc</groupId>
-            <artifactId>grpc-protobuf</artifactId>
-            <version>${grpc-protobuf.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -247,25 +172,6 @@
         </extensions>
 
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>${maven-enforcer-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>enforce</id>
-                        <configuration>
-                            <rules>
-                                <dependencyConvergence/>
-                            </rules>
-                        </configuration>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

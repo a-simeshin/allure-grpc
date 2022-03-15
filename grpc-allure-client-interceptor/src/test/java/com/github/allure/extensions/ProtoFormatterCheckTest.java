@@ -2,6 +2,8 @@ package com.github.allure.extensions;
 
 import com.google.protobuf.Message;
 import io.qameta.allure.Allure;
+import io.qameta.allure.Description;
+import io.qameta.allure.Feature;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -10,6 +12,10 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * This test should check formatter`s work results with single and any proto messages with formatting to Json and Plaintext.
+ */
+@Feature("Formatter")
 public class ProtoFormatterCheckTest {
 
     final HelloReply message = HelloReply.newBuilder().setMessage("test").build();
@@ -37,6 +43,13 @@ public class ProtoFormatterCheckTest {
             "message: \"test3\"\n";
 
     @Test
+    @Description(
+            "Test checking, that single proto message could be correctly formatted to json.\n" +
+                    "Steps:\n" +
+                    "1. Create proto message\n" +
+                    "2. Call formatter\n" +
+                    "3. Match with expected\n"
+    )
     public void correctlyFormattingToJsonSingleMessage() {
         Allure.addAttachment("message to format", message.toString());
         Allure.step("Formatter should form correctly format single message to Json", () -> {
@@ -48,6 +61,13 @@ public class ProtoFormatterCheckTest {
     }
 
     @Test
+    @Description(
+            "Single proto message could be correctly formatted to Plaintext.\n" +
+                    "Steps:\n" +
+                    "1. Create proto message\n" +
+                    "2. Call formatter\n" +
+                    "3. Match with expected\n"
+    )
     public void correctlyFormattingToPlaintextSingleMessage() {
         Allure.addAttachment("message to format", message.toString());
         Allure.step("Formatter should form correctly format single message to Plaintext", () -> {
@@ -59,6 +79,13 @@ public class ProtoFormatterCheckTest {
     }
 
     @Test
+    @Description(
+            "Any proto messages could be correctly formatted to Json.\n" +
+                    "Steps:\n" +
+                    "1. Create proto message\n" +
+                    "2. Call formatter\n" +
+                    "3. Match with expected\n"
+    )
     public void correctlyFormattingToJsonMessageList() {
         Allure.addAttachment("messages to format", messageList.toString());
         Allure.step("Formatter should form correctly format MessageList to Json", () -> {
@@ -70,6 +97,13 @@ public class ProtoFormatterCheckTest {
     }
 
     @Test
+    @Description(
+            "Any proto messages could be correctly formatted to Plaintext.\n" +
+                    "Steps:\n" +
+                    "1. Create proto message\n" +
+                    "2. Call formatter\n" +
+                    "3. Match with expected\n"
+    )
     public void correctlyFormattingToPlaintextMessageList() {
         Allure.addAttachment("messages to format", messageList.toString());
         Allure.step("Formatter should form correctly format MessageList to Plaintext", () -> {
