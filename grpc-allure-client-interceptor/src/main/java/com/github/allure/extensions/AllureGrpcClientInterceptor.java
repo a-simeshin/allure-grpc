@@ -4,15 +4,13 @@ import com.google.protobuf.Message;
 import io.grpc.*;
 import io.qameta.allure.Allure;
 import io.qameta.allure.AllureLifecycle;
+import io.qameta.allure.model.StepResult;
 import io.qameta.allure.util.ObjectUtils;
-import org.awaitility.Awaitility;
+import lombok.SneakyThrows;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * With this interceptor grpc client will attach all interaction data to Allure report.
@@ -38,10 +36,8 @@ public class AllureGrpcClientInterceptor implements ClientInterceptor {
          * Returning wrapper for original delegated client call with some logic for allure attachments
          */
         return new ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT>(call) {
-            final AtomicBoolean interactionIsDone = new AtomicBoolean(false);
-            final AtomicReference<List<RespT>> responses = new AtomicReference<>(new ArrayList<>());
-            final AtomicReference<Metadata> metadata = new AtomicReference<>(null);
-            final AtomicReference<Status> interactionStatus = new AtomicReference<>();
+            private String allureStepUUID;
+            private List<Message> payloads;
 
             /**
              * Attaching all request data instantly and async-attaching responses, headers and status
@@ -49,30 +45,25 @@ public class AllureGrpcClientInterceptor implements ClientInterceptor {
              * @param message request proto message
              */
             @Override
-            @SuppressWarnings("unchecked")
+            @SneakyThrows
             public void sendMessage(ReqT message) {
+                allureStepUUID = UUID.randomUUID().toString();
+                payloads = new ArrayList<>();
+                Allure.getLifecycle()
+                        .startStep(
+                                allureStepUUID,
+                                new StepResult().setName("gRPC intercation " + methodDescriptor.getServiceName())
+                        );
+                Allure.addAttachment("gRPC method", ObjectUtils.toString(methodDescriptor));
+                Allure.addAttachment("gRPC request", ObjectUtils.toString(ProtoFormatter.format((Message) message)));
                 super.sendMessage(message);
-
-                Allure.setLifecycle(getLifecycle());
-                Allure.step("gRPC intercation " + methodDescriptor.getServiceName(), () -> {
-                    Allure.addAttachment("gRPC method", ObjectUtils.toString(methodDescriptor));
-                    Allure.addAttachment("gRPC request", ObjectUtils.toString(ProtoFormatter.format((Message) message)));
-                    Allure.addByteAttachmentAsync("gRPC responses", "text/plain", () -> {
-                        Awaitility.await().until(interactionIsDone::get);
-                        return ObjectUtils.toString(ProtoFormatter.format((List<Message>) responses.get()))
-                                .getBytes(StandardCharsets.UTF_8);
-                    });
-                    Allure.addByteAttachmentAsync("gRPC status", "text/plain", () -> {
-                        Awaitility.await().until(() -> interactionStatus.get() != null);
-                        return ObjectUtils.toString(interactionStatus.get()).getBytes(StandardCharsets.UTF_8);
-                    });
-                });
             }
 
             /**
              * Declaring listener to update references in top-leve containers on any changes
+             *
              * @param responseListener delegated listener
-             * @param headers interaction headers
+             * @param headers          interaction headers
              */
             @Override
             public void start(Listener<RespT> responseListener, Metadata headers) {
@@ -80,20 +71,36 @@ public class AllureGrpcClientInterceptor implements ClientInterceptor {
                         new ForwardingClientCallListener.SimpleForwardingClientCallListener<RespT>(responseListener) {
                             @Override
                             public void onHeaders(Metadata headers) {
-                                metadata.set(headers);
+                                Allure.addAttachment("gRPC headers", ObjectUtils.toString(headers));
                                 super.onHeaders(headers);
                             }
 
                             @Override
                             public void onMessage(RespT message) {
-                                responses.get().add(message);
+                                payloads.add((Message) message);
                                 super.onMessage(message);
                             }
 
                             @Override
                             public void onClose(Status status, Metadata trailers) {
-                                interactionStatus.set(status);
-                                interactionIsDone.set(true);
+                                Allure.addAttachment("gRPC responses", ProtoFormatter.format(payloads));
+                                Allure.addAttachment("gRPC status", ObjectUtils.toString(status));
+
+                                if (status.isOk()) {
+                                    Allure.getLifecycle()
+                                            .updateStep(
+                                                    allureStepUUID,
+                                                    stepResult -> stepResult.setStatus(io.qameta.allure.model.Status.PASSED)
+                                            );
+                                } else {
+                                    Allure.getLifecycle()
+                                            .updateStep(
+                                                    allureStepUUID,
+                                                    stepResult -> stepResult.setStatus(io.qameta.allure.model.Status.FAILED)
+                                            );
+                                }
+                                Allure.getLifecycle().stopStep(allureStepUUID);
+
                                 super.onClose(status, trailers);
                             }
                         }, headers);

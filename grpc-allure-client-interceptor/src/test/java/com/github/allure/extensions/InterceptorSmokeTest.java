@@ -35,14 +35,14 @@ public class InterceptorSmokeTest {
     public void smokeSingleMessageMethodTest() {
         grpcServerEmulator.setReturnError(false);
         Allure.addAttachment("message to send", request.toString());
-        Allure.step("Send message", ()-> assertDoesNotThrow(() -> greeterBlockingStub.sayHello(request)));
+        Allure.step("Send message", () -> assertDoesNotThrow(() -> greeterBlockingStub.sayHello(request)));
     }
 
     @Test
     public void smokeSingleStreamedMethodTest() {
         grpcServerEmulator.setReturnError(false);
         Allure.addAttachment("message to send", request.toString());
-        Allure.step("Send message", ()-> assertDoesNotThrow(() -> greeterBlockingStub.sayHelloStream(request)));
+        Allure.step("Send message", () -> assertDoesNotThrow(() -> greeterBlockingStub.sayHelloStream(request)));
     }
 
 }
