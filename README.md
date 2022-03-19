@@ -1,2 +1,2 @@
 # grpc-allure-spring-boot-test
-gRPC interceptors for attach integration data into Allure reports
+Lightweight gRPC interceptors to attach integration data into Allure reports
