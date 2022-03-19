@@ -1,7 +1,15 @@
 package com.github.allure.extensions;
 
 import com.google.protobuf.Message;
-import io.grpc.*;
+import io.grpc.CallOptions;
+import io.grpc.Channel;
+import io.grpc.ClientCall;
+import io.grpc.ClientInterceptor;
+import io.grpc.ForwardingClientCall;
+import io.grpc.ForwardingClientCallListener;
+import io.grpc.Metadata;
+import io.grpc.MethodDescriptor;
+import io.grpc.Status;
 import io.qameta.allure.Allure;
 import io.qameta.allure.AllureLifecycle;
 import io.qameta.allure.model.StepResult;
@@ -52,7 +60,7 @@ public class AllureGrpcClientInterceptor implements ClientInterceptor {
                 Allure.getLifecycle()
                         .startStep(
                                 allureStepUUID,
-                                new StepResult().setName("gRPC intercation " + methodDescriptor.getServiceName())
+                                new StepResult().setName("gRPC interaction " + methodDescriptor.getFullMethodName())
                         );
                 Allure.addAttachment("gRPC method", ObjectUtils.toString(methodDescriptor));
                 Allure.addAttachment("gRPC request", ObjectUtils.toString(ProtoFormatter.format((Message) message)));

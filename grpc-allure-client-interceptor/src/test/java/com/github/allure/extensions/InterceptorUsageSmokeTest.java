@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
                 "grpc.client.testing.address=self:self"
         }
 )
-public class InterceptorSmokeTest {
+public class InterceptorUsageSmokeTest {
 
     @Autowired
     GreeterGrpc.GreeterBlockingStub greeterBlockingStub;

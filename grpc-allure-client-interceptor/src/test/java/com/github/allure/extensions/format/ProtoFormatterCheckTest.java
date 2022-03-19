@@ -1,5 +1,7 @@
-package com.github.allure.extensions;
+package com.github.allure.extensions.format;
 
+import com.github.allure.extensions.HelloReply;
+import com.github.allure.extensions.ProtoFormatter;
 import com.google.protobuf.Message;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Description;

@@ -1,9 +1,12 @@
-package com.github.allure.extensions;
+package com.github.allure.extensions.format;
 
+import com.github.allure.extensions.HelloReply;
+import com.github.allure.extensions.ProtoFormatter;
 import com.google.protobuf.Message;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Description;
 import io.qameta.allure.Feature;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -35,7 +38,7 @@ public class ProtoFormatterSmokeTest {
     )
     public void formatterWorkingAsIsForSingleMessage() {
         Allure.addAttachment("message to format", message.toString());
-        Allure.step("Formatter call as is", () -> assertDoesNotThrow(() -> ProtoFormatter.format(message)));
+        Allure.step("Formatter call as is", () -> Assertions.assertDoesNotThrow(() -> ProtoFormatter.format(message)));
     }
 
     @Test

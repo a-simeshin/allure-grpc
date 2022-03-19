@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
                 "grpc.client.testing.address=self:self"
         }
 )
-public class InterceptorSmokeReturnValueTest {
+public class ReturnValueWithInterceptorTest {
 
     @Autowired
     GreeterGrpc.GreeterBlockingStub greeterBlockingStub;
