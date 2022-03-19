@@ -9,14 +9,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
-@DirtiesContext
 @EnableAutoConfiguration
 @SpringBootTest(
         classes = ClientTestConfiguration.class,
@@ -44,7 +44,7 @@ public class InterceptorSmokeReturnValueTest {
     @Test
     public void smokeSingleMessageMethodTest() {
         Allure.addAttachment("message to send", request.toString());
-        Allure.step("Send message then check", ()-> {
+        Allure.step("Send message then check", () -> {
             final HelloReply reply = greeterBlockingStub.sayHello(request);
             assertNotNull(reply);
             assertEquals("Hi Smoke", reply.getMessage());
@@ -54,16 +54,17 @@ public class InterceptorSmokeReturnValueTest {
     @Test
     public void smokeStreamedMessagesMethodTest() {
         Allure.addAttachment("message to send", request.toString());
-        Allure.step("Send message then check", ()-> {
+        Allure.step("Send message then check", () -> {
+            final List<HelloReply> expecting = new ArrayList<>();
+            expecting.add(HelloReply.newBuilder().setMessage("Hi Smoke").build());
+            expecting.add(HelloReply.newBuilder().setMessage("And again Hi Smoke").build());
+
+            final List<HelloReply> replyList = new ArrayList<>();
             final Iterator<HelloReply> reply = greeterBlockingStub.sayHelloStream(request);
-            final HelloReply firstReply = reply.next();
-            final HelloReply secondReply = reply.next();
-            assertAll(
-                    () -> assertNotNull(firstReply),
-                    () -> assertNotNull(secondReply),
-                    () -> assertEquals("Hi Smoke", firstReply.getMessage()),
-                    () -> assertEquals("And again Hi Smoke", secondReply.getMessage())
-            );
+            while (reply.hasNext()) {
+                replyList.add(reply.next());
+            }
+            assertArrayEquals(expecting.toArray(), replyList.toArray());
         });
     }
 
