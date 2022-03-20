@@ -2,6 +2,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](http://www.opensource.org/licenses/MIT)
 [![CodeStyle](https://img.shields.io/badge/codestyle-spotless-green)](https://github.com/diffplug/spotless)
 [![CodeAnalysis](https://img.shields.io/badge/static%20code%20analysis-spotbugs-green)](https://github.com/spotbugs/spotbugs)
+[![Docs](https://img.shields.io/badge/docs-quickstart-blueviolet)](https://a-simeshin.github.io/allure-grpc/)
 
 Lightweight gRPC interceptors to attach integration data into Allure reports
 
