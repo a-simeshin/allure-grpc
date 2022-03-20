@@ -1,3 +1,26 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2022 a-simeshin
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.github.allure.extensions;
 
 import com.google.protobuf.Message;
@@ -14,11 +37,10 @@ import io.qameta.allure.Allure;
 import io.qameta.allure.AllureLifecycle;
 import io.qameta.allure.model.StepResult;
 import io.qameta.allure.util.ObjectUtils;
-import lombok.SneakyThrows;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import lombok.SneakyThrows;
 
 /**
  * With this interceptor grpc client will attach all interaction data to Allure report.
@@ -35,9 +57,8 @@ public class AllureGrpcClientInterceptor implements ClientInterceptor {
     };
 
     @Override
-    public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(MethodDescriptor<ReqT, RespT> methodDescriptor,
-                                                               CallOptions callOptions,
-                                                               Channel channel) {
+    public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(
+            MethodDescriptor<ReqT, RespT> methodDescriptor, CallOptions callOptions, Channel channel) {
         final ClientCall<ReqT, RespT> call = channel.newCall(methodDescriptor, callOptions);
 
         /*
@@ -60,8 +81,7 @@ public class AllureGrpcClientInterceptor implements ClientInterceptor {
                 Allure.getLifecycle()
                         .startStep(
                                 allureStepUUID,
-                                new StepResult().setName("gRPC interaction " + methodDescriptor.getFullMethodName())
-                        );
+                                new StepResult().setName("gRPC interaction " + methodDescriptor.getFullMethodName()));
                 Allure.addAttachment("gRPC method", ObjectUtils.toString(methodDescriptor));
                 Allure.addAttachment("gRPC request", ObjectUtils.toString(ProtoFormatter.format((Message) message)));
                 super.sendMessage(message);
@@ -98,20 +118,21 @@ public class AllureGrpcClientInterceptor implements ClientInterceptor {
                                     Allure.getLifecycle()
                                             .updateStep(
                                                     allureStepUUID,
-                                                    stepResult -> stepResult.setStatus(io.qameta.allure.model.Status.PASSED)
-                                            );
+                                                    stepResult ->
+                                                            stepResult.setStatus(io.qameta.allure.model.Status.PASSED));
                                 } else {
                                     Allure.getLifecycle()
                                             .updateStep(
                                                     allureStepUUID,
-                                                    stepResult -> stepResult.setStatus(io.qameta.allure.model.Status.FAILED)
-                                            );
+                                                    stepResult ->
+                                                            stepResult.setStatus(io.qameta.allure.model.Status.FAILED));
                                 }
                                 Allure.getLifecycle().stopStep(allureStepUUID);
 
                                 super.onClose(status, trailers);
                             }
-                        }, headers);
+                        },
+                        headers);
             }
         };
     }
@@ -124,5 +145,4 @@ public class AllureGrpcClientInterceptor implements ClientInterceptor {
     public static AllureLifecycle getLifecycle() {
         return lifecycle.get();
     }
-
 }
