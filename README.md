@@ -1,10 +1,14 @@
 # grpc-allure-spring-boot-test
+[![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](http://www.opensource.org/licenses/MIT)
+[![CodeStyle](https://img.shields.io/badge/codestyle-spotless-green)](https://github.com/diffplug/spotless)
+[![CodeAnalysis](https://img.shields.io/badge/static%20code%20analysis-spotbugs-green)](https://github.com/spotbugs/spotbugs)
+
 Lightweight gRPC interceptors to attach integration data into Allure reports
 
 ## Client interceptor
-The client interceptor designed to attach maximum of useful integration data from the gRPC client to Allure, that 
-could be helpful to visually display possible problems that occur in tests without repeated broken or failed tests on 
-CI. Supports unary and stream interactions. Interceptor converts and formats messages from proto to more readable json 
+The client interceptor designed to attach maximum of useful integration data from the gRPC client to Allure, that
+could be helpful to visually display possible problems that occur in tests without repeated broken or failed tests on
+CI. Supports unary and stream interactions. Interceptor converts and formats messages from proto to more readable json
 format by default.
 
 ![](./docs/clientInterceptorExample.png)
@@ -52,7 +56,7 @@ or
 )
 
 public class ClientTestConfiguration {
-    
+
     @Bean
     GlobalClientInterceptorConfigurer globalClientInterceptorConfigurer() {
         return interceptors -> interceptors.add(new AllureGrpcClientInterceptor());
@@ -69,7 +73,7 @@ or
 )
 
 public class ClientTestConfiguration {
-    
+
     @GrpcGlobalClientInterceptor
     AllureGrpcClientInterceptor allureGrpcClientInterceptor() {
         return new AllureGrpcClientInterceptor();
