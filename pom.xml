@@ -65,8 +65,8 @@
         <dependencies>
             <!-- modules to extend with autoconfiguration -->
             <dependency>
-                <groupId>com.github.allure.extesions</groupId>
-                <artifactId>grpc-allure-client-interceptor</artifactId>
+                <groupId>com.github.allure.extensions</groupId>
+                <artifactId>allure-grpc-client-interceptor</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
